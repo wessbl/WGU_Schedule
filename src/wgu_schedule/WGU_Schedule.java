@@ -26,7 +26,7 @@ public class WGU_Schedule extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/Views/TestView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Views/Login.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("WGU Schedule - Login");
