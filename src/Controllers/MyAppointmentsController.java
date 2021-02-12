@@ -11,12 +11,14 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -37,24 +39,44 @@ public class MyAppointmentsController implements Initializable {
     @FXML
     private Button button_add_appt;
 
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println("farts!");
+        // TODO anything?
     }    
     
-        private void ChangeWindow(String window, Stage stage) throws IOException
+    
+    @FXML
+    private void by_week(MouseEvent event) {
+        // TODO only show items for this week?
+        System.out.println("Unimplemented event!");
+    }
+
+    
+    @FXML
+    private void by_month(MouseEvent event) {
+        // TODO show items for this month?
+        System.out.println("Unimplemented event!");
+    }
+
+    
+    @FXML
+    private void add_appointment(MouseEvent event) throws IOException {
+        System.out.println("Adding Appointment");
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        ChangeWindow("SingleAppointment", stage);
+        // TODO tell controller that it needs to display window as New Appointment
+    }
+    
+    
+    private void ChangeWindow(String window, Stage stage) throws IOException
     {
         //  Get Loader & load it
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/" + window + ".fxml"));
         Parent parent = loader.load();
-        
-        // TODO remove?
-        //  Set controller for new window - always goes back to MainScreen
-        //  MyAppointmentsController c = loader.getController();
-        //  loader.setController(c);
         
         //  Show new stage
         Scene scene = new Scene(parent);
