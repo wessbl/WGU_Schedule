@@ -1,0 +1,12 @@
+1/30:
+- Views have been created. Created java project. Project opens with Login.
+2/10:
+- Project successfully navigates from Login to SingleAppointment view.
+2/20:
+- Have figured out popup windows, starting with TimeSelect. 
+
+PROBLEMS:
+	- Exception when trying to display a window:
+		- Edit the FXML file, make sure the fx:controller tag is filled out correctly. Should start with "Controllers..."
+		- Make sure FXMLLoader is given the right window. It should be "/Views/Something.fxml".
+		- Last Error Message: NoSuchMethodExc: Controllers.///.<init>(). Make sure there is an empty constructor in the controller class.
