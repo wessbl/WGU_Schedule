@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Objects;
 
 public class DBAppointments {
     public static Dictionary<Integer, Appointment> appointments;
@@ -41,12 +42,20 @@ public class DBAppointments {
                 int userID = rs.getInt("User_ID");
                 int contactID = rs.getInt("Contact_ID");
                 
+                // Create appointment objects
                 Appointment apt = new Appointment(id, title, description, location, 
                         type, start, end, customerID, userID, contactID);
                 aList.add(apt);
                 appointments.put(id, apt);
+                
+                //  Keep nextID equal to the largest ID
                 if (nextID < id)
-                    id = nextID;
+                    nextID = id;
+                
+                // Assign appointments to customers
+                DBCustomers.getAllCustomers();
+                Model.Customer c = DBCustomers.getCustomer(customerID);
+                c.addAppointment(id);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -84,13 +93,23 @@ public class DBAppointments {
         
         PreparedStatement ps = DBConnection.getConnection().prepareStatement(command);
         ps.executeUpdate();
+        
+        //  Add appointment to customer's list
+        Model.Customer c = DBCustomers.getCustomer(apt.customerID);
+        c.addAppointment(apt.id);
     }
     
     //  Updates an EXISTING appointment in the DB
     public static void updateAppointment (Appointment apt) throws SQLException
     {
-        String user = DBUsers.currentUser.getUsername();
+        // First, get the existing Customer_ID
+        Integer aptID = apt.id;
+        Integer oldCID = appointments.get(apt.id).customerID;
+        Integer newCID = apt.id;
         
+        
+        //  Perform the update
+        String user = DBUsers.currentUser.getUsername();
         String command = "UPDATE appointments SET ";
         command += "Title = '"          + apt.title             + "', ";
         command += "Description = '"    + apt.description       + "', ";
@@ -107,12 +126,31 @@ public class DBAppointments {
         
         PreparedStatement ps = DBConnection.getConnection().prepareStatement(command);
         ps.executeUpdate();
+        
+        //  Update customers associated with this appointment
+        if (!Objects.equals(oldCID, newCID))
+        {
+            //  Remove appointment from old customer
+            Model.Customer c = DBCustomers.getCustomer(oldCID);
+            c.removeAppointment(aptID);
+            
+            //  Add appointment to new customer
+            c = DBCustomers.getCustomer(newCID);
+            c.addAppointment(aptID);
+        }
     }
     
     public static void deleteAppointment(Appointment apt) throws SQLException
     {
+        //  Remove appt from the DB
         String command = "DELETE FROM appointments WHERE Appointment_ID = " + apt.id;
         PreparedStatement ps = DBConnection.getConnection().prepareStatement(command);
         ps.executeUpdate();
+        
+        //  Remove appt from model storage
+        Model.Customer c = DBCustomers.getCustomer(apt.customerID);
+        Integer id = apt.id;
+        c.removeAppointment(id);
+        appointments.remove(apt);
     }
 }

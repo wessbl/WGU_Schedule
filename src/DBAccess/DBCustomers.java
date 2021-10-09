@@ -22,9 +22,10 @@ import javafx.collections.ObservableList;
  * @author wessl
  */
 public class DBCustomers {
-    public static Dictionary<Integer, Customer> customers = new Hashtable<Integer, Customer>();
+    private static Dictionary<Integer, Customer> customers;
     
     public static ObservableList<Customer> getAllCustomers() {
+        customers = new Hashtable<Integer, Customer>();
         ObservableList<Customer> cList = FXCollections.observableArrayList();
         String query = "SELECT * FROM customers";
         
@@ -47,6 +48,11 @@ public class DBCustomers {
         }
         
         return cList;
+    }
+    
+    public static Customer getCustomer(Integer id)
+    {
+        return customers.get(id);
     }
     
     //  Saves a NEW Customer into the DB
@@ -93,10 +99,18 @@ public class DBCustomers {
     }
     
     //  Deletes an existing Customer
-    public static void delete(Customer c) throws SQLException
+    public static void delete(Customer c) throws SQLException, Exception
     {
+        //  Don't allow deletion if customer has any appointments
+        if (!c.getAppointments().isEmpty())
+            throw new Exception("Customer cannot be deleted because it has appointments!");
+        
+        //  Delete customer from Database
         String command = "DELETE FROM customers WHERE Customer_ID = " + c.id;
         PreparedStatement ps = DBConnection.getConnection().prepareStatement(command);
         ps.executeUpdate();
+        
+        //  Delete customer from Model
+        customers.remove(c.id);
     }
 }

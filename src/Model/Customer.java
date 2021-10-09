@@ -1,6 +1,8 @@
 package Model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,6 +19,7 @@ public class Customer {
 //    private final LocalDateTime lastUpdate;
 //    private final String updatedBy;
     public int division;
+    private List<Integer> appointments;
     
     public Customer (int id, String name, String address, String zip, String phone, 
             int division){
@@ -30,6 +33,22 @@ public class Customer {
 //        this.lastUpdate = lastUpdate;
 //        this.updatedBy = updatedBy;
         this.division = division;
+        appointments = new ArrayList<Integer>();
+    }
+    
+    public List<Integer> getAppointments()
+    {
+        return appointments;
+    }
+    
+    public void addAppointment(Integer id)
+    {
+        appointments.add(id);
+    }
+    
+    public void removeAppointment(Integer id)
+    {
+        appointments.remove(id);
     }
     
     @Override
@@ -40,6 +59,7 @@ public class Customer {
         s += zip + " \t";
         s += phone + " \t";
         s += division + " \t";
+        s += "Apts:"+ appointments;
         return s;
     }
 }

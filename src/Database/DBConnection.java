@@ -1,5 +1,7 @@
 package Database;
 
+import DBAccess.DBAppointments;
+import DBAccess.DBCustomers;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -32,6 +34,12 @@ public abstract class DBConnection {
     public static Connection getConnection()
     {
         return connection;
+    }
+    
+    public static void refresh()
+    {
+        DBAppointments.getAllAppointments();
+        DBCustomers.getAllCustomers();
     }
 
     public static void closeConnection() {
